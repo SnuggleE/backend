@@ -47,6 +47,20 @@ app.get('/evaloption/', function (req, res) {
     });
 
 });
+//登陆验证
+app.get('/evaloption/', function (req, res) {
+    connect.query("select * from evaloption",function (error, result, field) {
+        if(error){
+            throw error;
+        }
+        res.writeHead(200,{'Content-Type':'application/JSON;charset=utf-8'});//设置response编码为utf-8
+
+        console.log(JSON.stringify(result));
+        res.end(JSON.stringify(result));
+
+    });
+
+});
 
 var server = app.listen(8081, function () {
 
