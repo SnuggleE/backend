@@ -1,0 +1,23 @@
+{
+  "name": "tssibackend",
+  "version": "1.0.0",
+  "description": "tssi",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.14.1",
+    "md5": "^2.2.1",
+    "mysql": "^2.13.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "node",
+    "mysql",
+    "restful"
+  ],
+  "author": "ljk",
+  "license": "ISC"
+}
