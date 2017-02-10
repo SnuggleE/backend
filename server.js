@@ -2,10 +2,12 @@
  * Created by test1 on 2017/2/10.
  */
 const express = require('express');
-const app = express();
 const fs = require("fs");
-
 const mysql=require('mysql');
+const port=8081;
+
+
+const app = express();
 
 var connect=mysql.createConnection({
     host:"localhost",
@@ -62,10 +64,9 @@ app.get('/evaloption/', function (req, res) {
 
 });
 
-var server = app.listen(8081, function () {
+var server = app.listen(port, function () {
 
     var host = server.address().address;
-    var port = server.address().port;
-    console.log("应用实例，访问地址为 http://%s:%s", host, port)
+    console.log("打分系统restful接口后台，访问地址为 http://%s:%s", host, port)
 
 });
