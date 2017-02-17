@@ -4,10 +4,14 @@
 const express = require('express');
 const fs = require("fs");
 const mysql=require('mysql');
-const port=8081;
-
+const md5=require('md5');
+const bodyParser=require('body-parser')
+const port=8088;
+const version="v1";
+const preurl='/tssi/'+version;
 
 const app = express();
+app.use(bodyParser.urlencoded({extended:false}))
 
 var connect=mysql.createConnection({
     host:"localhost",
@@ -17,27 +21,57 @@ var connect=mysql.createConnection({
 });
 connect.connect()
 
-
+//设置跨域问题
+function crossDomain(res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
+  res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+  res.header("X-Powered-By",' 3.2.1')
+}
 //根据用户id获得用户信息
-app.get('/getuser/:id', function (req, res) {
-    var mid=req.params.id;
-    console.log(mid);
-    connect.query("select password from members where mid="+mid,function (error, result, field) {
+app.get('/getuser', function (req, res) {
+    // var mid=req.params.id;
+    connect.query("select * from members",function (error, result, field) {
         if(error){
             throw error;
         }
         res.writeHead(200,{'Content-Type':'application/JSON;charset=utf-8'});//设置response编码为utf-8
+        console.log(req);
 
-        console.log(JSON.stringify(result[0]));
-        res.end(JSON.stringify(result[0]));
+        // console.log(JSON.stringify(result));
+        res.end(JSON.stringify(result));
 
     });
 
 });
+//验证用户名和密码
+app.post(preurl+'/auth',function (req, res) {
+    crossDomain(res);
+    var params=JSON.parse(req.body.params);
+    var username=params.username;
+    var password=md5(params.password);
+    connect.query("select * from members where mname='"+username+"' and password='"+password+"'",function (error, result, field) {
+        if(error)
+            throw error;
+        // console.log(result);
+        res.writeHead(200,{'Content-Type':'application/JSON;charset=utf-8'});//设置response编码为utf-8
+      console.log(result);
+      if(result.length==1){
+        res.end(JSON.stringify({message:'ok',data:result}));
+      }
+      else
+          res.end(JSON.stringify({message:'error'}))
+
+
+    })
+})
+
 
 //获得所有打分选项
-app.get('/evaloption/', function (req, res) {
-    connect.query("select * from evaloption",function (error, result, field) {
+app.get(preurl+'/evaloption/', function (req, res) {
+
+  crossDomain(res);
+  connect.query("select * from evaloption",function (error, result, field) {
         if(error){
             throw error;
         }
@@ -49,20 +83,7 @@ app.get('/evaloption/', function (req, res) {
     });
 
 });
-//登陆验证
-app.get('/evaloption/', function (req, res) {
-    connect.query("select * from evaloption",function (error, result, field) {
-        if(error){
-            throw error;
-        }
-        res.writeHead(200,{'Content-Type':'application/JSON;charset=utf-8'});//设置response编码为utf-8
 
-        console.log(JSON.stringify(result));
-        res.end(JSON.stringify(result));
-
-    });
-
-});
 
 var server = app.listen(port, function () {
 
