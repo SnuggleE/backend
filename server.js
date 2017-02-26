@@ -70,6 +70,25 @@ app.post('/auth',function (req, res) {
 
     })
 })
+app.post('/modifyPwd',function (req, res) {
+    crossDomain(res);
+    console.log(req.body)
+    var params=(req.body);
+    var username=params.username;
+    var password=md5(params.newPwd);
+    let sql="update members set password='"+password+"' where mname='"+username+"'";
+    console.log(sql);
+    connect.query(sql,function (error, result, field) {
+        if(error)
+            throw error;
+        // console.log(result);
+        res.writeHead(200,{'Content-Type':'application/JSON;charset=utf-8'});//设置response编码为utf-8
+      console.log(result);
+        res.end(JSON.stringify({message:'ok',data:result}));
+
+
+    })
+})
 
 
 //获得所有打分选项
