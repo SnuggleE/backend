@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({extended:false}))
 var connect=mysql.createConnection({
     host:"localhost",
     user:"root",
-    password:"1234",
+    password:"123456",
     database:"tssi"
 });
 connect.connect()
@@ -26,17 +26,19 @@ function crossDomain(res) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
   res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-  res.header("X-Powered-By",' 3.2.1')
+  res.header("X-Powered-By",' 3.2.1');
+  console.log('*****************************************************************')
 }
 //根据用户id获得用户信息
 app.get('/getuser', function (req, res) {
     // var mid=req.params.id;
+    crossDomain(res)
     connect.query("select * from members",function (error, result, field) {
         if(error){
             throw error;
         }
         res.writeHead(200,{'Content-Type':'application/JSON;charset=utf-8'});//设置response编码为utf-8
-        console.log(req);
+        // console.log(req);
 
         // console.log(JSON.stringify(result));
         res.end(JSON.stringify(result));
@@ -45,12 +47,15 @@ app.get('/getuser', function (req, res) {
 
 });
 //验证用户名和密码
-app.post(preurl+'/auth',function (req, res) {
+app.post('/auth',function (req, res) {
     crossDomain(res);
-    var params=JSON.parse(req.body.params);
+    console.log(req.body)
+    var params=(req.body);
     var username=params.username;
     var password=md5(params.password);
-    connect.query("select * from members where mname='"+username+"' and password='"+password+"'",function (error, result, field) {
+    let sql="select * from members where mname='"+username+"' and password='"+password+"'";
+    console.log(sql);
+    connect.query(sql,function (error, result, field) {
         if(error)
             throw error;
         // console.log(result);
