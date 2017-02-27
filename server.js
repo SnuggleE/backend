@@ -70,6 +70,7 @@ app.post('/auth',function (req, res) {
 
     })
 })
+
 app.post('/modifyPwd',function (req, res) {
     crossDomain(res);
     console.log(req.body)
