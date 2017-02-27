@@ -88,6 +88,5 @@ app.get(preurl+'/evaloption/', function (req, res) {
 var server = app.listen(port, function () {
 
     var host = server.address().address;
-    console.log("打分系统restful接口后台，访问地址为 http://%s:%s", host, port)
-
+    console.log("打分系统restful接口后台，访问地址为 http://%s:%s", host, port);
 });
